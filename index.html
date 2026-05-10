@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-<title>টিউশন ট্র্যাকার প্রো</title>
+<title>টিউশন ট্র্যাকার প্রো - ভার্সন ৮</title>
 
 <style>
 :root {
@@ -12,44 +12,45 @@
   --amber:#ff8c42; --violet:#b87aff; --red:#ff4d4d;
 }
 
-/* ফন্ট ফিক্স: যদি গুগল ফন্ট লোড না হয় তবে ফোনের ডিফল্ট বাংলা ফন্ট কাজ করবে */
-* { 
-  box-sizing: border-box; 
-  margin: 0; 
-  padding: 0; 
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, 'Arial', 'SolaimanLipi', 'Hind Siliguri';
-}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif, 'Arial', 'SolaimanLipi'; }
+body { background: var(--bg); color: var(--text); padding-bottom: 120px; }
 
-body { background: var(--bg); color: var(--text); padding-bottom: 120px; line-height: 1.4; }
-
-.header { text-align: center; padding: 25px 15px; }
-.app-title { font-size: 1.6rem; color: var(--blue); font-weight: bold; }
+.header { text-align: center; padding: 20px; }
+.app-title { font-size: 1.5rem; color: var(--blue); font-weight: bold; }
 
 .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px; max-width: 500px; margin: 0 auto; }
 @media(max-width:350px){ .grid { grid-template-columns: 1fr; } }
 
-.card { background: var(--s1); border: 1px solid var(--border); border-radius: 15px; padding: 12px; position: relative; border-top: 3px solid var(--c); }
+.card { background: var(--s1); border: 1px solid var(--border); border-radius: 15px; padding: 12px; border-top: 3px solid var(--c); }
 .card.blue { --c: var(--blue); } .card.green { --c: var(--green); }
 .card.amber { --c: var(--amber); } .card.violet { --c: var(--violet); }
 
-.sname { font-weight: bold; font-size: 1rem; margin-bottom: 8px; display: block; color: var(--c); }
-.subj-sel { width: 100%; padding: 8px; background: var(--s2); border: 1px solid var(--border); border-radius: 5px; color: var(--text); font-size: 0.85rem; margin-bottom: 10px; outline: none; }
+.sname { font-weight: bold; font-size: 1rem; color: var(--c); margin-bottom: 5px; display: block; }
+.count-chip { font-size: 0.7rem; color: var(--dim); margin-bottom: 10px; display: block; }
+
+.subj-sel { width: 100%; padding: 8px; background: var(--s2); border: 1px solid var(--border); border-radius: 5px; color: var(--text); font-size: 0.8rem; margin-bottom: 10px; outline: none; }
 
 .btn-start { width: 100%; padding: 10px; background: var(--c); border: none; border-radius: 8px; color: #fff; font-weight: bold; cursor: pointer; }
 .btn-end { width: 100%; padding: 10px; background: var(--red); border: none; border-radius: 8px; color: #fff; font-weight: bold; cursor: pointer; }
 
 .timer { font-size: 1.2rem; font-weight: bold; text-align: center; margin-bottom: 8px; color: var(--green); }
 
-#undo-box { position: fixed; bottom: 85px; left: 10px; right: 10px; background: var(--s2); border: 1px solid var(--blue); padding: 12px; border-radius: 12px; display: none; justify-content: space-between; align-items: center; z-index: 1000; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
-.btn-undo { background: var(--blue); color: #000; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+.btn-hist { width: 100%; margin-top: 8px; background: transparent; border: 1px solid var(--border); color: var(--dim); padding: 5px; border-radius: 5px; font-size: 0.7rem; cursor: pointer; }
 
-.footer-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--s1); padding: 15px; display: flex; gap: 8px; border-top: 1px solid var(--border); justify-content: center; z-index: 100; flex-wrap: wrap; }
+/* History Style */
+.hist-list { margin-top: 10px; max-height: 150px; overflow-y: auto; display: none; border-top: 1px solid var(--border); padding-top: 5px; }
+.hist-list.show { display: block; }
+.hist-item { font-size: 0.7rem; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.03); display: flex; justify-content: space-between; }
+
+#undo-box { position: fixed; bottom: 85px; left: 10px; right: 10px; background: var(--s2); border: 1px solid var(--blue); padding: 12px; border-radius: 12px; display: none; justify-content: space-between; align-items: center; z-index: 1000; }
+
+.footer-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--s1); padding: 15px; display: flex; gap: 8px; border-top: 1px solid var(--border); justify-content: center; z-index: 100; }
 .btn-nav { padding: 8px 12px; border-radius: 10px; border: none; background: var(--s2); color: var(--text); font-size: 0.75rem; font-weight: bold; cursor: pointer; border: 1px solid var(--border); }
 
 .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; padding: 20px; z-index: 200; }
 .modal.open { display: flex; }
 .modal-content { background: var(--s1); padding: 20px; border-radius: 15px; width: 100%; max-width: 400px; border: 1px solid var(--border); }
-.report-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+.report-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
 .hidden { display: none !important; }
 </style>
 </head>
@@ -57,14 +58,13 @@ body { background: var(--bg); color: var(--text); padding-bottom: 120px; line-he
 
 <div class="header">
   <h1 class="app-title">Tuition Tracker Pro</h1>
-  <p style="font-size: 0.75rem; color: var(--dim); margin-top: 5px;">স্মার্ট টিউশন ডায়েরি</p>
 </div>
 
 <div class="grid" id="grid"></div>
 
 <div id="undo-box">
-  <span id="undo-msg">সেভ হয়েছে</span>
-  <button class="btn-undo" onclick="performUndo()">Undo</button>
+  <span style="font-size: 0.8rem">সেশন সেভ হয়েছে!</span>
+  <button style="background:var(--blue); border:none; padding:5px 10px; border-radius:5px; font-weight:bold;" onclick="performUndo()">Undo</button>
 </div>
 
 <div class="footer-nav">
@@ -76,7 +76,7 @@ body { background: var(--bg); color: var(--text); padding-bottom: 120px; line-he
 
 <div class="modal" id="reportModal">
   <div class="modal-content">
-    <h3 style="margin-bottom: 15px; color: var(--blue);">মাসিক রিপোর্ট (১০-১০)</h3>
+    <h3 style="margin-bottom: 10px; color: var(--blue);">মাসিক রিপোর্ট (১০-১০)</h3>
     <input type="date" id="repStart" class="subj-sel">
     <input type="date" id="repEnd" class="subj-sel">
     <button class="btn-start" onclick="generateReport()">হিসাব করুন</button>
@@ -93,27 +93,40 @@ const STUDENTS = [
   {id:'new',   name:'Sifat 2', c:'violet', sub: ["ফিজিক্স", "কেমিস্ট্রি", "হায়ার ম্যাথ", "বায়োলজি", "ইংরেজী", "বাংলা", "বাউবি", "গণিত"]}
 ];
 
-let lastDeletedSession = null;
-let undoTimeout = null;
-const getData = id => JSON.parse(localStorage.getItem('t_v7_'+id) || '[]');
-const setData = (id, data) => localStorage.setItem('t_v7_'+id, JSON.stringify(data));
+const getData = id => JSON.parse(localStorage.getItem('tt_v8_'+id) || '[]');
+const setData = (id, data) => localStorage.setItem('tt_v8_'+id, JSON.stringify(data));
 
 function init() {
   const grid = document.getElementById('grid');
   grid.innerHTML = '';
   STUDENTS.forEach(s => {
-    const isRunning = !!localStorage.getItem('a_'+s.id);
+    const isRunning = !!localStorage.getItem('act_'+s.id);
+    const logs = getData(s.id);
+    
+    // ইউনিক দিন গণনা
+    const daysCount = new Set(logs.map(l => new Date(l.end).toDateString())).size;
+
     const div = document.createElement('div');
     div.className = `card ${s.c}`;
     div.innerHTML = `
       <span class="sname">${s.name}</span>
+      <span class="count-chip">📅 মোট পড়িয়েছেন: ${daysCount} দিন</span>
       <select class="subj-sel ${isRunning?'hidden':''}" id="sel-${s.id}">
         ${s.sub.map(x => `<option value="${x}">${x}</option>`).join('')}
       </select>
-      <div id="t-${s.id}" class="timer ${isRunning?'':'hidden'}">00:00</div>
+      <div id="timer-${s.id}" class="timer ${isRunning?'':'hidden'}">00:00</div>
       <button class="${isRunning?'btn-end':'btn-start'}" onclick="toggleS('${s.id}')">
-        ${isRunning ? 'সেশন শেষ' : 'পড়া শুরু'}
+        ${isRunning ? 'সেশন শেষ' : 'শুরু করুন'}
       </button>
+      <button class="btn-hist" onclick="document.getElementById('hlist-${s.id}').classList.toggle('show')">📜 ইতিহাস ও সাবজেক্ট</button>
+      <div class="hist-list" id="hlist-${s.id}">
+        ${logs.slice().reverse().map(l => `
+          <div class="hist-item">
+            <span>${new Date(l.end).toLocaleDateString('bn-BD')} - ${l.subj}</span>
+            <span style="color:var(--dim)">${Math.round(l.dur/60000)}মি.</span>
+          </div>
+        `).join('') || '<div style="font-size:0.6rem;text-align:center">কোনো ডেটা নেই</div>'}
+      </div>
     `;
     grid.appendChild(div);
     if(isRunning) startTimer(s.id);
@@ -122,43 +135,47 @@ function init() {
 
 function toggleS(id) {
   const now = Date.now();
-  if(!localStorage.getItem('a_'+id)) {
-    localStorage.setItem('a_'+id, now);
-    localStorage.setItem('s_'+id, document.getElementById('sel-'+id).value);
+  if(!localStorage.getItem('act_'+id)) {
+    localStorage.setItem('act_'+id, now);
+    localStorage.setItem('sub_'+id, document.getElementById('sel-'+id).value);
     init();
   } else {
-    const start = parseInt(localStorage.getItem('a_'+id));
-    const subj = localStorage.getItem('s_'+id);
+    const start = parseInt(localStorage.getItem('act_'+id));
+    const subj = localStorage.getItem('sub_'+id);
     const logs = getData(id);
-    const sesh = { start, end: now, subj, dur: now - start };
-    logs.push(sesh);
+    logs.push({ start, end: now, subj, dur: now - start });
     setData(id, logs);
-    lastDeletedSession = { id, sesh };
-    document.getElementById('undo-box').style.display = 'flex';
-    clearTimeout(undoTimeout);
-    undoTimeout = setTimeout(()=> document.getElementById('undo-box').style.display='none', 8000);
-    localStorage.removeItem('a_'+id);
+    localStorage.removeItem('act_'+id);
     init();
+    showUndo(id);
   }
 }
 
+let undoTimeout;
+let lastId;
+function showUndo(id) {
+  lastId = id;
+  document.getElementById('undo-box').style.display = 'flex';
+  clearTimeout(undoTimeout);
+  undoTimeout = setTimeout(()=> document.getElementById('undo-box').style.display='none', 8000);
+}
+
 function performUndo() {
-  if(!lastDeletedSession) return;
-  const logs = getData(lastDeletedSession.id);
-  logs.pop();
-  setData(lastDeletedSession.id, logs);
-  localStorage.setItem('a_'+lastDeletedSession.id, lastDeletedSession.sesh.start);
+  const logs = getData(lastId);
+  const last = logs.pop();
+  setData(lastId, logs);
+  localStorage.setItem('act_'+lastId, last.start);
   document.getElementById('undo-box').style.display = 'none';
   init();
 }
 
 let timers = {};
 function startTimer(id) {
-  const start = parseInt(localStorage.getItem('a_'+id));
+  const start = parseInt(localStorage.getItem('act_'+id));
   timers[id] = setInterval(() => {
     const diff = Date.now() - start;
     const m = Math.floor(diff/60000), s = Math.floor((diff%60000)/1000);
-    const el = document.getElementById('t-'+id);
+    const el = document.getElementById('timer-'+id);
     if(el) el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
   }, 1000);
 }
@@ -174,8 +191,9 @@ function generateReport() {
   STUDENTS.forEach(s => {
     const logs = getData(s.id).filter(l => l.end >= sD && l.end <= eD);
     const ms = logs.reduce((sum, l) => sum + l.dur, 0);
+    const daysCount = new Set(logs.map(l => new Date(l.end).toDateString())).size;
     total += ms;
-    res += `<div class="report-item"><span>${s.name}</span><b>${Math.floor(ms/3600000)}ঘ ${Math.round((ms%3600000)/60000)}মি</b></div>`;
+    res += `<div class="report-item"><span>${s.name} (${daysCount} দিন)</span><b>${Math.floor(ms/3600000)}ঘ ${Math.round((ms%3600000)/60000)}মি</b></div>`;
   });
   res += `<div class="report-item" style="color:var(--blue); font-weight:bold;"><span>সর্বমোট</span><b>${Math.floor(total/3600000)}ঘ ${Math.round((total%3600000)/60000)}মি</b></div></div>`;
   document.getElementById('reportResult').innerHTML = res;
@@ -184,7 +202,7 @@ function generateReport() {
 function exportData() {
   const all = {}; STUDENTS.forEach(s => all[s.id] = getData(s.id));
   const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(all)], {type:'application/json'}));
-  a.download = `backup.json`; a.click();
+  a.download = `Tuition_Backup.json`; a.click();
 }
 function importData() { document.getElementById('fileInp').click(); }
 function processImport(inp) {
