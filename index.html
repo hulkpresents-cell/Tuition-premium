@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>টিউশন ট্র্যাকার প্রো - ভার্সন ৯ (ক্লাউড সিঙ্ক)</title>
+  <title>টিউশন ট্র্যাকার প্রো - ভার্সন ৯ (আলটিমেট ব্যাকআপ ও শেয়ারিং)</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -21,9 +21,9 @@
             sans: ['Hind Siliguri', 'sans-serif', 'Arial'],
           },
           colors: {
-            obsidian: '#0b0f19',
-            cardBg: '#121826',
-            cardBorder: 'rgba(255, 255, 255, 0.08)',
+            obsidian: '#090b11',
+            cardBg: '#111420',
+            cardBorder: 'rgba(255, 255, 255, 0.07)',
           }
         }
       }
@@ -32,26 +32,47 @@
 
   <style>
     body {
-      background-color: #0b0f19;
+      background-color: #090b11;
       -webkit-tap-highlight-color: transparent;
     }
-    /* Scrollbar Styling */
     ::-webkit-scrollbar {
       width: 6px;
     }
     ::-webkit-scrollbar-track {
-      background: #121826;
+      background: #111420;
     }
     ::-webkit-scrollbar-thumb {
       background: #2ed88a;
       border-radius: 3px;
+    }
+    
+    /* Print Styles for Guardian Invoice/Report Card */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #print-area, #print-area * {
+        visibility: visible;
+      }
+      #print-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        color: #000 !important;
+        background: #fff !important;
+        padding: 20px;
+      }
+      .no-print {
+        display: none !important;
+      }
     }
   </style>
 </head>
 <body class="text-slate-200 font-sans pb-32 min-h-screen">
 
   <!-- Header Section -->
-  <header class="border-b border-cardBorder bg-cardBg/50 backdrop-blur-md sticky top-0 z-50 px-4 py-4">
+  <header class="border-b border-cardBorder bg-cardBg/60 backdrop-blur-md sticky top-0 z-50 px-4 py-4">
     <div class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
       <div class="flex items-center gap-3">
         <div class="bg-gradient-to-tr from-emerald-500 to-teal-400 p-2.5 rounded-xl shadow-lg shadow-emerald-500/20">
@@ -59,20 +80,20 @@
         </div>
         <div>
           <h1 class="text-xl font-bold bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">Tuition Tracker Pro</h1>
-          <p class="text-[10px] text-slate-400 font-medium tracking-wide uppercase">Version 9.0 • Premium Cloud Sync</p>
+          <p class="text-[10px] text-slate-400 font-medium tracking-wide uppercase">Version 9.0 • offline sync & guardian reports</p>
         </div>
       </div>
       
-      <!-- Connection Indicator and Sync ID -->
+      <!-- ID Sync system -->
       <div class="flex flex-wrap items-center gap-2 justify-center">
-        <span id="sync-status" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center gap-1.5 animate-pulse">
-          <i class="fa-solid fa-circle-notch animate-spin"></i> সিঙ্ক হচ্ছে...
+        <span id="sync-status" class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1.5">
+          <i class="fa-solid fa-shield-halved"></i> সুরক্ষিত লোকাল প্রোফাইল
         </span>
-        <button onclick="copySyncId()" class="px-2.5 py-1 rounded-full text-xs font-medium bg-slate-800 text-slate-300 border border-cardBorder hover:bg-slate-700 transition flex items-center gap-1">
-          <i class="fa-regular fa-copy"></i> ID: <span id="sync-id-display">...</span>
+        <button onclick="copySyncId()" class="px-2.5 py-1 rounded-full text-[11px] font-medium bg-slate-800 text-slate-300 border border-cardBorder hover:bg-slate-700 transition flex items-center gap-1">
+          <i class="fa-regular fa-copy"></i> ID: <span id="sync-id-display">default</span>
         </button>
-        <button onclick="openLoginModal()" class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 transition flex items-center gap-1">
-          <i class="fa-solid fa-right-to-bracket"></i> রিস্টোর ID
+        <button onclick="openLoginModal()" class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 transition flex items-center gap-1">
+          <i class="fa-solid fa-user-gear"></i> প্রোফাইল আইডি পরিবর্তন
         </button>
       </div>
     </div>
@@ -90,20 +111,16 @@
         <i class="fa-solid fa-calendar-plus"></i> ম্যানুয়াল সেশন
       </button>
       <button onclick="openReportModal()" class="flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-500 hover:to-violet-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg shadow-purple-900/20 transition-all transform hover:-translate-y-0.5 text-sm">
-        <i class="fa-solid fa-chart-pie"></i> মাসিক রিপোর্ট
+        <i class="fa-solid fa-chart-pie"></i> মাসিক রিপোর্ট ও শেয়ার
       </button>
       <button onclick="openBackupModal()" class="flex items-center justify-center gap-2 bg-gradient-to-r from-slate-700 to-slate-800 hover:from-slate-600 hover:to-slate-700 text-white font-bold py-3 px-4 rounded-xl border border-cardBorder shadow-lg transition-all transform hover:-translate-y-0.5 text-sm">
-        <i class="fa-solid fa-database"></i> ব্যাকআপ ও রিস্টোর
+        <i class="fa-solid fa-database"></i> ব্যাকআপ ও স্মার্ট রিস্টোর
       </button>
     </div>
 
     <!-- Student Cards Grid -->
-    <div id="student-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+    <div id="student-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <!-- Cards will be injected dynamically -->
-      <div class="col-span-full text-center py-12 text-slate-400">
-        <i class="fa-solid fa-circle-notch animate-spin text-3xl text-emerald-400 mb-3"></i>
-        <p>লোডিং হচ্ছে...</p>
-      </div>
     </div>
   </main>
 
@@ -133,7 +150,7 @@
     </button>
     <button onclick="openReportModal()" class="flex flex-col items-center gap-1 text-slate-400 hover:text-emerald-400 transition">
       <i class="fa-solid fa-file-invoice text-lg"></i>
-      <span class="text-[10px]">রিপোর্ট</span>
+      <span class="text-[10px]">রিপোর্ট কার্ড</span>
     </button>
     <button onclick="openAddStudentModal()" class="flex flex-col items-center gap-1 text-slate-400 hover:text-emerald-400 transition">
       <i class="fa-solid fa-users-gear text-lg"></i>
@@ -150,7 +167,7 @@
         <i class="fa-solid fa-xmark text-lg"></i>
       </button>
       <h3 class="text-lg font-bold text-slate-100 mb-4 flex items-center gap-2">
-        <i class="fa-solid fa-user-graduate text-emerald-400"></i> নতুন ছাত্র/ছাত্রী যোগ করুন
+        <i class="fa-solid fa-user-graduate text-emerald-400"></i> ছাত্র/ছাত্রী বিবরণী
       </h3>
       <form id="student-form" onsubmit="saveStudent(event)">
         <input type="hidden" id="edit-student-id">
@@ -162,19 +179,19 @@
           <div>
             <label class="block text-xs font-semibold text-slate-400 mb-1.5">কার্ডের থিম কালার</label>
             <div class="grid grid-cols-4 gap-2">
-              <label class="flex items-center justify-center p-2 rounded-lg border border-cardBorder cursor-pointer hover:bg-slate-800 transition">
+              <label class="flex items-center justify-center p-2 rounded-lg border border-cardBorder cursor-pointer hover:bg-slate-850 transition">
                 <input type="radio" name="student-color" value="blue" checked class="sr-only peer">
                 <span class="w-5 h-5 rounded-full bg-blue-500 inline-block peer-checked:ring-2 peer-checked:ring-offset-2 peer-checked:ring-offset-slate-900 peer-checked:ring-blue-400"></span>
               </label>
-              <label class="flex items-center justify-center p-2 rounded-lg border border-cardBorder cursor-pointer hover:bg-slate-800 transition">
+              <label class="flex items-center justify-center p-2 rounded-lg border border-cardBorder cursor-pointer hover:bg-slate-850 transition">
                 <input type="radio" name="student-color" value="emerald" class="sr-only peer">
                 <span class="w-5 h-5 rounded-full bg-emerald-500 inline-block peer-checked:ring-2 peer-checked:ring-offset-2 peer-checked:ring-offset-slate-900 peer-checked:ring-emerald-400"></span>
               </label>
-              <label class="flex items-center justify-center p-2 rounded-lg border border-cardBorder cursor-pointer hover:bg-slate-800 transition">
+              <label class="flex items-center justify-center p-2 rounded-lg border border-cardBorder cursor-pointer hover:bg-slate-850 transition">
                 <input type="radio" name="student-color" value="amber" class="sr-only peer">
                 <span class="w-5 h-5 rounded-full bg-amber-500 inline-block peer-checked:ring-2 peer-checked:ring-offset-2 peer-checked:ring-offset-slate-900 peer-checked:ring-amber-400"></span>
               </label>
-              <label class="flex items-center justify-center p-2 rounded-lg border border-cardBorder cursor-pointer hover:bg-slate-800 transition">
+              <label class="flex items-center justify-center p-2 rounded-lg border border-cardBorder cursor-pointer hover:bg-slate-850 transition">
                 <input type="radio" name="student-color" value="purple" class="sr-only peer">
                 <span class="w-5 h-5 rounded-full bg-purple-500 inline-block peer-checked:ring-2 peer-checked:ring-offset-2 peer-checked:ring-offset-slate-900 peer-checked:ring-purple-400"></span>
               </label>
@@ -186,7 +203,7 @@
           </div>
         </div>
         <div class="flex gap-2 mt-6">
-          <button type="button" onclick="closeModal('studentModal')" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded-xl transition text-sm">বাতিল</button>
+          <button type="button" onclick="closeModal('studentModal')" class="flex-1 bg-slate-800 hover:bg-slate-750 text-slate-300 font-bold py-2.5 rounded-xl transition text-sm">বাতিল</button>
           <button type="submit" class="flex-1 bg-emerald-500 hover:bg-emerald-400 text-obsidian font-bold py-2.5 rounded-xl transition text-sm">সংরক্ষণ করুন</button>
         </div>
       </form>
@@ -238,7 +255,7 @@
           </div>
         </div>
         <div class="flex gap-2 mt-6">
-          <button type="button" onclick="closeModal('manualModal')" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded-xl transition text-sm">বাতিল</button>
+          <button type="button" onclick="closeModal('manualModal')" class="flex-1 bg-slate-800 hover:bg-slate-750 text-slate-300 font-bold py-2.5 rounded-xl transition text-sm">বাতিল</button>
           <button type="submit" class="flex-1 bg-emerald-500 hover:bg-emerald-400 text-obsidian font-bold py-2.5 rounded-xl transition text-sm">যুক্ত করুন</button>
         </div>
       </form>
@@ -247,7 +264,7 @@
 
   <!-- Monthly Report Modal -->
   <div id="reportModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-cardBg border border-cardBorder rounded-2xl w-full max-w-md p-6 relative">
+    <div class="bg-cardBg border border-cardBorder rounded-2xl w-full max-w-lg p-6 relative">
       <button onclick="closeModal('reportModal')" class="absolute top-4 right-4 text-slate-400 hover:text-white transition">
         <i class="fa-solid fa-xmark text-lg"></i>
       </button>
@@ -265,12 +282,112 @@
             <input type="date" id="report-end" class="w-full bg-slate-900 border border-cardBorder rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none focus:border-emerald-500 transition text-sm">
           </div>
         </div>
-        <button onclick="generateReport()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-obsidian font-bold py-2.5 rounded-xl transition text-sm">রিপোর্ট হিসাব করুন</button>
+        <button onclick="generateReport()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-obsidian font-bold py-2.5 rounded-xl transition text-sm shadow-md shadow-emerald-500/10">রিপোর্ট হিসাব করুন</button>
         
-        <div id="report-result" class="space-y-2 max-h-60 overflow-y-auto pr-1">
+        <div id="report-result" class="space-y-2 max-h-72 overflow-y-auto pr-1">
           <!-- Dynamically populated report items -->
           <div class="text-center text-xs text-slate-500 py-6">উপরের তারিখ নির্বাচন করে হিসাব বাটনে চাপ দিন।</div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Smart Import Merge Options Modal -->
+  <div id="importConflictModal" class="fixed inset-0 bg-black/95 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-cardBg border border-emerald-500/20 rounded-2xl w-full max-w-md p-6 relative">
+      <h3 class="text-lg font-bold text-emerald-400 mb-3 flex items-center gap-2">
+        <i class="fa-solid fa-arrows-merge"></i> ইম্পোর্ট মোড নির্ধারণ করুন
+      </h3>
+      <p class="text-xs text-slate-400 leading-relaxed mb-4">
+        আমরা একটি ব্যাকআপ ফাইল পেয়েছি! আপনি কি আপনার বর্তমান ট্র্যাকার ডেটার সাথে এই ফাইলের ডেটাগুলো **যুক্ত (Merge)** করতে চান, নাকি আগের সব মুছে নতুন ফাইলটি **রিপ্লেস (Replace)** করতে চান?
+      </p>
+      <div class="space-y-2.5">
+        <button onclick="completeImportProcess('merge')" class="w-full flex items-center justify-between p-3.5 bg-slate-900 hover:bg-slate-850 rounded-xl border border-emerald-500/30 text-left transition group">
+          <div>
+            <span class="font-bold text-emerald-400 text-sm block">১. পূর্ববর্তী ডেটার সাথে যুক্ত করুন (Merge)</span>
+            <span class="text-[11px] text-slate-500">কোনো পুরাতন ডেটা ডিলিট হবে না, শুধু নতুনগুলো যোগ হবে।</span>
+          </div>
+          <i class="fa-solid fa-chevron-right text-slate-500 group-hover:text-emerald-400 transition text-xs"></i>
+        </button>
+        <button onclick="completeImportProcess('replace')" class="w-full flex items-center justify-between p-3.5 bg-slate-900 hover:bg-slate-850 rounded-xl border border-red-500/20 text-left transition group">
+          <div>
+            <span class="font-bold text-red-400 text-sm block">২. সমস্ত ডেটা নতুন করে সেট করুন (Replace)</span>
+            <span class="text-[11px] text-slate-500">বর্তমান ট্র্যাকার খালি হয়ে ফাইলটির সম্পূর্ণ ফ্রেশ ডেটা সেট হবে।</span>
+          </div>
+          <i class="fa-solid fa-chevron-right text-slate-500 group-hover:text-red-400 transition text-xs"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Guardian Report / Invoice Slip Modal -->
+  <div id="guardianReportModal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-cardBg border border-cardBorder rounded-2xl w-full max-w-lg p-6 relative flex flex-col max-h-[90vh]">
+      <button onclick="closeModal('guardianReportModal')" class="absolute top-4 right-4 text-slate-400 hover:text-white transition no-print">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+      
+      <div class="overflow-y-auto flex-1 pr-1" id="guardian-modal-scroll-area">
+        <!-- Printable Slip Container -->
+        <div id="print-area" class="bg-slate-950 p-6 rounded-xl border border-cardBorder text-slate-200 font-sans">
+          <!-- Header of Slip -->
+          <div class="text-center border-b border-dashed border-cardBorder pb-4 mb-4">
+            <h4 class="text-lg font-bold text-emerald-400">টিউশন ক্লাস ও উপস্থিতি বিবরণী</h4>
+            <p class="text-[10px] text-slate-400 uppercase tracking-widest">Tuition Tracker Pro</p>
+            <p class="text-[11px] text-slate-300 mt-1">তারিখ: <span id="slip-range" class="font-bold">...</span></p>
+          </div>
+
+          <!-- Student Meta Data -->
+          <div class="grid grid-cols-2 gap-4 mb-4 text-xs">
+            <div>
+              <span class="text-slate-500 block">শিক্ষার্থীর নাম:</span>
+              <strong id="slip-student-name" class="text-slate-200 text-sm">...</strong>
+            </div>
+            <div class="text-right">
+              <span class="text-slate-500 block">মোট ক্লাস সংখ্যা:</span>
+              <strong id="slip-total-classes" class="text-emerald-400 text-sm">... টি</strong>
+            </div>
+          </div>
+
+          <!-- Statistics Summary Grid -->
+          <div class="grid grid-cols-2 gap-2.5 mb-5 text-center">
+            <div class="bg-slate-900/80 p-3 rounded-lg border border-cardBorder">
+              <span class="text-[10px] text-slate-500 block">উপস্থিতি (মোট দিন)</span>
+              <strong id="slip-days-count" class="text-lg font-bold text-slate-200">০ দিন</strong>
+            </div>
+            <div class="bg-slate-900/80 p-3 rounded-lg border border-cardBorder">
+              <span class="text-[10px] text-slate-500 block">পড়ানোর মোট সময়</span>
+              <strong id="slip-hours-count" class="text-lg font-bold text-emerald-400">০ঘ ০মি</strong>
+            </div>
+          </div>
+
+          <!-- Subject Breakdown List -->
+          <div class="mb-5">
+            <span class="text-[11px] font-bold text-slate-400 block mb-2 uppercase tracking-wide">বিষয়ভিত্তিক ক্লাস উপস্থিতি:</span>
+            <div id="slip-subject-breakdown" class="space-y-1.5 text-xs">
+              <!-- Dynamically Populated -->
+            </div>
+          </div>
+
+          <!-- Footer Note -->
+          <div class="border-t border-dashed border-cardBorder pt-4 mt-4 text-center">
+            <p class="text-[11px] text-slate-400 italic">"সম্মানিত অভিভাবক, উপরোক্ত বিবরণীটি আপনার সন্তানের এই মাসের উপস্থিতি এবং টিউশন ক্লাসের সঠিক রেকর্ড।"</p>
+            <p class="text-[9px] text-slate-600 mt-2 font-mono">Generated via Tuition Tracker Pro • v9</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Footer for Guardian Share -->
+      <div class="flex flex-col sm:flex-row gap-2 mt-5 border-t border-cardBorder/40 pt-4 no-print">
+        <button onclick="shareOnWhatsApp()" class="flex-1 py-3 px-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl transition flex items-center justify-center gap-2 text-sm shadow-lg shadow-emerald-900/20">
+          <i class="fa-brands fa-whatsapp text-lg"></i> অভিভাবকের WhatsApp-এ পাঠান
+        </button>
+        <button onclick="copyFormattedReportText()" class="py-3 px-4 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl transition flex items-center justify-center gap-2 text-sm border border-cardBorder">
+          <i class="fa-regular fa-copy"></i> রিপোর্ট টেক্সট কপি
+        </button>
+        <button onclick="window.print()" class="py-3 px-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl transition flex items-center justify-center gap-2 text-sm">
+          <i class="fa-solid fa-print"></i> প্রিন্ট বা PDF করুন
+        </button>
       </div>
     </div>
   </div>
@@ -282,11 +399,11 @@
         <i class="fa-solid fa-xmark text-lg"></i>
       </button>
       <h3 class="text-lg font-bold text-slate-100 mb-4 flex items-center gap-2">
-        <i class="fa-solid fa-shield-halved text-emerald-400"></i> অফলাইন ব্যাকআপ ও রিস্টোর
+        <i class="fa-solid fa-shield-halved text-emerald-400"></i> স্মার্ট লোকাল ব্যাকআপ ও রিস্টোর
       </h3>
       <div class="space-y-4">
-        <div class="p-3 bg-slate-900 rounded-xl border border-cardBorder text-xs text-slate-400 leading-relaxed">
-          <i class="fa-solid fa-circle-info text-blue-400 mr-1"></i> ক্লাউড সিঙ্ক ছাড়াও আপনি আপনার ডিভাইসে ব্যাকআপ ফাইল ডাউনলোড করে রাখতে পারেন এবং পরবর্তীতে রিস্টোর করতে পারেন।
+        <div class="p-3 bg-slate-900 rounded-xl border border-cardBorder text-[11px] text-slate-400 leading-relaxed">
+          <i class="fa-solid fa-circle-info text-blue-400 mr-1"></i> আপনার ফোনে থাকা <strong>V8 বা যেকোনো পুরাতন সংস্করণের ব্যাকআপ ফাইলও</strong> এখানে সরাসরি আপলোড করে মার্জ করে নিতে পারেন।
         </div>
         <div class="grid grid-cols-2 gap-3">
           <button onclick="exportData()" class="flex flex-col items-center justify-center p-4 bg-slate-900 hover:bg-slate-850 rounded-xl border border-cardBorder transition group">
@@ -295,7 +412,7 @@
           </button>
           <button onclick="triggerImport()" class="flex flex-col items-center justify-center p-4 bg-slate-900 hover:bg-slate-850 rounded-xl border border-cardBorder transition group">
             <i class="fa-solid fa-file-import text-xl text-blue-400 mb-2 group-hover:scale-110 transition"></i>
-            <span class="text-xs font-bold text-slate-200">ফাইল রিস্টোর করুন</span>
+            <span class="text-xs font-bold text-slate-200">পুরাতন বা নতুন ফাইল রিস্টোর</span>
           </button>
         </div>
         <input type="file" id="file-import-input" class="hidden" accept=".json" onchange="processFileImport(this)">
@@ -303,24 +420,24 @@
     </div>
   </div>
 
-  <!-- Custom Login / Restore Cloud Data Modal -->
+  <!-- Custom Login / ID Restore Modal -->
   <div id="loginModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-cardBg border border-cardBorder rounded-2xl w-full max-w-md p-6 relative">
       <button onclick="closeModal('loginModal')" class="absolute top-4 right-4 text-slate-400 hover:text-white transition">
         <i class="fa-solid fa-xmark text-lg"></i>
       </button>
       <h3 class="text-lg font-bold text-slate-100 mb-2 flex items-center gap-2">
-        <i class="fa-solid fa-cloud-arrow-down text-emerald-400"></i> সিঙ্ক আইডি দিয়ে লগইন করুন
+        <i class="fa-solid fa-key text-indigo-400"></i> আপনার প্রোফাইল আইডি পরিবর্তন
       </h3>
       <p class="text-xs text-slate-400 mb-4 leading-relaxed">
-        আপনার পূর্বের সিঙ্ক আইডিটি দিয়ে এখানে সাবমিট করলেই আপনার সমস্ত ডেটা স্বয়ংক্রিয়ভাবে ক্লাউড থেকে সিঙ্ক হয়ে ফোনে লোড হয়ে যাবে।
+        ব্রাউজারের ক্যাশ রিসেট প্রতিরোধ করতে এখানে আপনার পছন্দসই আইডিটি (যেমন: স্ক্রিনশটে থাকা আইডিটি) দিয়ে সাবমিট করুন। আপনার ফোনের ডাটাবেজে ওই আইডির আওতায় সমস্ত তথ্য সুসংগঠিত থাকবে।
       </p>
       <div class="space-y-4">
         <div>
-          <label class="block text-xs font-semibold text-slate-400 mb-1.5">আপনার সিঙ্ক আইডি (Sync ID)</label>
-          <input type="text" id="restore-sync-id" required placeholder="উদাঃ 8df7e6..." class="w-full bg-slate-900 border border-cardBorder rounded-xl px-3 py-2.5 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition text-sm">
+          <label class="block text-xs font-semibold text-slate-400 mb-1.5">আপনার প্রোফাইল আইডি (Profile ID)</label>
+          <input type="text" id="restore-sync-id" required placeholder="উদাঃ 0955247511961907688" class="w-full bg-slate-900 border border-cardBorder rounded-xl px-3 py-2.5 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition text-sm">
         </div>
-        <button onclick="performRestoreSyncId()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-obsidian font-bold py-2.5 rounded-xl transition text-sm">আইডি কানেক্ট করুন</button>
+        <button onclick="performRestoreSyncId()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 rounded-xl transition text-sm">প্রোফাইল স্যুইচ করুন</button>
       </div>
     </div>
   </div>
@@ -342,28 +459,32 @@
   <!-- Custom Toast System -->
   <div id="toast-container" class="fixed top-20 right-4 left-4 md:left-auto md:w-80 flex flex-col gap-2 z-50 pointer-events-none"></div>
 
-  <!-- Firebase Integration Script -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, addDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-    // Application Configuration
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'tuition-tracker-pro-v9';
-    const firebaseConfigStr = typeof __firebase_config !== 'undefined' ? __firebase_config : null;
+  <!-- Main System Script -->
+  <script>
+    // Application States
+    let currentProfileId = localStorage.getItem('tt_active_profile_id') || 'default-user';
     
-    let db, auth;
-    let currentUser = null;
-    let localMode = false;
-
-    // Local Memory Fallbacks
     let students = [];
     let sessions = [];
     let activeSessions = {}; // studentId -> { start, subj }
+    
+    let tempImportedData = null; // Used to hold temporary parse result before resolving conflicts
     let lastDeletedSession = null;
+    let selectedReportData = null; // Holds the currently viewed guardian report parameters
 
-    // Toast Generator
-    window.showToast = function(message, type = 'info') {
+    // Default Seed Students (including Double Core)
+    const DEFAULT_STUDENTS = [
+      { id: 'johan', name: 'Johan', c: 'blue', sub: ["ফিজিক্স", "কেমিস্ট্রি", "হায়ার ম্যাথ", "বায়োলজি", "ইংরেজী", "বাংলা", "বাউবি", "গণিত"] },
+      { id: 'sifat', name: 'Sifat', c: 'emerald', sub: ["ফিজিক্স", "কেমিস্ট্রি", "হায়ার ম্যাথ", "বায়োলজি", "ইংরেজী", "বাংলা", "বাউবি", "গণিত"] },
+      { id: 'arian', name: 'Arian', c: 'amber', sub: ["গণিত", "বিজ্ঞান", "ইংরেজী", "বাউবি", "বাংলা"] },
+      { id: 'double-core', name: 'Double Core', c: 'purple', sub: ["ফিজিক্স", "কেমিস্ট্রি", "হায়ার ম্যাথ", "বায়োলজি", "ইংরেজী", "বাংলা", "বাউবি", "গণিত"] }
+    ];
+
+    // Namespaced Local Storage Helpers
+    const getStorageKey = (type) => `tt_v9_${currentProfileId}_${type}`;
+
+    // Toast Messages Trigger
+    function showToast(message, type = 'info') {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
       toast.className = `p-3.5 rounded-xl border shadow-xl flex items-center gap-2.5 transition-all duration-300 transform translate-y-2 opacity-0 pointer-events-auto text-xs font-medium`;
@@ -390,8 +511,8 @@
       }, 4000);
     }
 
-    // Modal Control Functions
-    window.openModal = function(id) {
+    // Modal Manager
+    function openModal(id) {
       const modal = document.getElementById(id);
       if(modal) {
         modal.classList.remove('hidden');
@@ -399,7 +520,7 @@
       }
     }
 
-    window.closeModal = function(id) {
+    function closeModal(id) {
       const modal = document.getElementById(id);
       if(modal) {
         modal.classList.add('hidden');
@@ -407,163 +528,62 @@
       }
     }
 
-    // Default Students Seed Data
-    const DEFAULT_STUDENTS = [
-      { id: 'johan', name: 'Johan', c: 'blue', sub: ["ফিজিক্স", "কেমিস্ট্রি", "হায়ার ম্যাথ", "বায়োলজি", "ইংরেজী", "বাংলা", "বাউবি", "গণিত"] },
-      { id: 'sifat', name: 'Sifat', c: 'emerald', sub: ["ফিজিক্স", "কেমিস্ট্রি", "হায়ার ম্যাথ", "বায়োলজি", "ইংরেজী", "বাংলা", "বাউবি", "গণিত"] },
-      { id: 'arian', name: 'Arian', c: 'amber', sub: ["গণিত", "বিজ্ঞান", "ইংরেজী", "বাউবি", "বাংলা"] },
-      { id: 'double-core', name: 'Double Core', c: 'purple', sub: ["ফিজিক্স", "কেমিস্ট্রি", "হায়ার ম্যাথ", "বায়োলজি", "ইংরেজী", "বাংলা", "বাউবি", "গণিত"] }
-    ];
-
-    // Core Initialization
-    async function initApp() {
-      // Setup Local Data Defaults in case offline/fallback
-      if (!localStorage.getItem('tt_students')) {
-        localStorage.setItem('tt_students', JSON.stringify(DEFAULT_STUDENTS));
+    // Initialize Database Keys
+    function loadLocalData() {
+      // If students list under active profile does not exist, check default seed data
+      if (!localStorage.getItem(getStorageKey('students'))) {
+        localStorage.setItem(getStorageKey('students'), JSON.stringify(DEFAULT_STUDENTS));
       }
-      students = JSON.parse(localStorage.getItem('tt_students') || '[]');
-      sessions = JSON.parse(localStorage.getItem('tt_sessions') || '[]');
-      activeSessions = JSON.parse(localStorage.getItem('tt_active') || '{}');
-
-      if (firebaseConfigStr) {
-        try {
-          const firebaseConfig = JSON.parse(firebaseConfigStr);
-          const app = initializeApp(firebaseConfig);
-          auth = getAuth(app);
-          db = getFirestore(app);
-
-          // Authenticate FIRST (Rule 3)
-          const initAuth = async () => {
-            const token = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-            if (token) {
-              await signInWithCustomToken(auth, token);
-            } else {
-              // Custom persistent user tracking
-              let customUid = localStorage.getItem('tt_custom_uid');
-              if (customUid) {
-                // If there's already a local reference, keep using it for consistent user doc paths
-                await signInAnonymously(auth);
-              } else {
-                const cred = await signInAnonymously(auth);
-                localStorage.setItem('tt_custom_uid', cred.user.uid);
-              }
-            }
-          };
-          await initAuth();
-
-          onAuthStateChanged(auth, (user) => {
-            if (user) {
-              currentUser = user;
-              localStorage.setItem('tt_custom_uid', user.uid);
-              document.getElementById('sync-id-display').textContent = user.uid;
-              document.getElementById('sync-status').className = "px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1.5";
-              document.getElementById('sync-status').innerHTML = `<i class="fa-solid fa-cloud"></i> ক্লাউড সিঙ্ক সক্রিয়`;
-              setupCloudSync();
-            } else {
-              enableLocalMode();
-            }
-          });
-
-        } catch (error) {
-          console.error("Firebase startup error:", error);
-          enableLocalMode();
-        }
-      } else {
-        enableLocalMode();
-      }
+      students = JSON.parse(localStorage.getItem(getStorageKey('students')) || '[]');
+      sessions = JSON.parse(localStorage.getItem(getStorageKey('sessions')) || '[]');
+      activeSessions = JSON.parse(localStorage.getItem(getStorageKey('active_timers')) || '{}');
+      
+      document.getElementById('sync-id-display').textContent = currentProfileId;
     }
 
-    function enableLocalMode() {
-      localMode = true;
-      document.getElementById('sync-status').className = "px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20 flex items-center gap-1.5";
-      document.getElementById('sync-status').innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> অফলাইন মেমরি মোড`;
-      document.getElementById('sync-id-display').textContent = 'OFFLINE';
-      renderGrid();
+    function saveToStorage() {
+      localStorage.setItem(getStorageKey('students'), JSON.stringify(students));
+      localStorage.setItem(getStorageKey('sessions'), JSON.stringify(sessions));
+      localStorage.setItem(getStorageKey('active_timers'), JSON.stringify(activeSessions));
     }
 
-    // Cloud Realtime Subscription (Rule 1 & Rule 2 Compliant)
-    let unsubStudents, unsubSessions, unsubActive;
-    function setupCloudSync() {
-      if (!currentUser) return;
-      const uid = currentUser.uid;
-
-      // 1. Listen to Students (Rule 1 path)
-      const studentsColl = collection(db, 'artifacts', appId, 'users', uid, 'students');
-      unsubStudents = onSnapshot(studentsColl, (snapshot) => {
-        let items = [];
-        snapshot.forEach(doc => items.push({ id: doc.id, ...doc.data() }));
-        if (items.length === 0) {
-          // Seed initial students to cloud
-          DEFAULT_STUDENTS.forEach(async (s) => {
-            await setDoc(doc(db, 'artifacts', appId, 'users', uid, 'students', s.id), s);
-          });
-        } else {
-          students = items;
-          localStorage.setItem('tt_students', JSON.stringify(students));
-          renderGrid();
-        }
-      }, (err) => {
-        console.error("Firestore students error", err);
-        showToast("ক্লাউড স্টুডেন্ট লোড ব্যর্থ হয়েছে", "error");
-      });
-
-      // 2. Listen to Sessions
-      const sessionsColl = collection(db, 'artifacts', appId, 'users', uid, 'sessions');
-      unsubSessions = onSnapshot(sessionsColl, (snapshot) => {
-        let items = [];
-        snapshot.forEach(doc => items.push({ id: doc.id, ...doc.data() }));
-        sessions = items;
-        localStorage.setItem('tt_sessions', JSON.stringify(sessions));
-        renderGrid();
-      }, (err) => {
-        console.error("Firestore sessions error", err);
-      });
-
-      // 3. Listen to Active Sessions (Running Timers)
-      const activeColl = collection(db, 'artifacts', appId, 'users', uid, 'active');
-      unsubActive = onSnapshot(activeColl, (snapshot) => {
-        let actMap = {};
-        snapshot.forEach(doc => actMap[doc.id] = doc.data());
-        activeSessions = actMap;
-        localStorage.setItem('tt_active', JSON.stringify(activeSessions));
-        renderGrid();
-      }, (err) => {
-        console.error("Firestore active error", err);
-      });
-    }
-
-    // Sync ID Logins / Switching Devices
-    window.performRestoreSyncId = async function() {
+    // Change offline profile ID safely
+    function performRestoreSyncId() {
       const syncIdInput = document.getElementById('restore-sync-id').value.trim();
       if (!syncIdInput) {
-        showToast("অনুগ্রহ করে একটি সঠিক সিঙ্ক আইডি দিন", "error");
+        showToast("একটি প্রোফাইল আইডি দিন", "error");
         return;
       }
-
-      if (localMode) {
-        showToast("দুঃখিত, বর্তমানে ক্লাউড কানেকশন অনুপলব্ধ!", "error");
-        return;
-      }
-
-      showToast("নতুন আইডি যাচাই করা হচ্ছে...", "info");
-      // To prevent complex validation scripts, we save the UID to custom user persistence memory and trigger a restart.
-      localStorage.setItem('tt_custom_uid', syncIdInput);
-      closeModal('loginModal');
+      currentProfileId = syncIdInput;
+      localStorage.setItem('tt_active_profile_id', syncIdInput);
       
-      // Perform window reload to smoothly rebuild Firebase triggers with new UID
-      setTimeout(() => {
-        window.location.reload();
-      }, 500);
+      loadLocalData();
+      renderGrid();
+      closeModal('loginModal');
+      showToast(`প্রোফাইল '${syncIdInput}' এ পরিবর্তিত হয়েছে`, "success");
     }
 
-    window.openLoginModal = function() {
-      if (currentUser) {
-        document.getElementById('restore-sync-id').value = currentUser.uid;
-      }
+    function openLoginModal() {
+      document.getElementById('restore-sync-id').value = currentProfileId === 'default-user' ? '' : currentProfileId;
       openModal('loginModal');
     }
 
-    // Dynamic UI Rendering
+    // Copy Profile ID
+    function copySyncId() {
+      const tempInp = document.createElement('input');
+      tempInp.value = currentProfileId;
+      document.body.appendChild(tempInp);
+      tempInp.select();
+      try {
+        document.execCommand('copy');
+        showToast("প্রোফাইল আইডি কপি হয়েছে!", "success");
+      } catch (err) {
+        prompt("আইডিটি কপি করে নিন:", currentProfileId);
+      }
+      document.body.removeChild(tempInp);
+    }
+
+    // Grid System Rendering
     let timerIntervals = {};
     function renderGrid() {
       const grid = document.getElementById('student-grid');
@@ -581,80 +601,77 @@
 
       students.forEach(s => {
         const isRunning = activeSessions[s.id] !== undefined;
-        
-        // Count Unique teaching days
         const studentSessions = sessions.filter(x => x.studentId === s.id);
         const daysCount = new Set(studentSessions.map(l => new Date(l.end).toDateString())).size;
 
         const card = document.createElement('div');
-        const colorClass = getAccentClasses(s.c || 'emerald');
-        card.className = `border rounded-2xl p-5 shadow-xl transition-all duration-300 relative bg-cardBg ${colorClass.border} hover:shadow-2xl flex flex-col justify-between`;
+        const colorStyle = getAccentClasses(s.c || 'emerald');
+        card.className = `border rounded-2xl p-5 shadow-xl transition-all duration-300 relative bg-cardBg ${colorStyle.border} hover:shadow-2xl flex flex-col justify-between`;
 
         let selectOptions = (s.sub || []).map(x => `<option value="${x}">${x}</option>`).join('');
 
         card.innerHTML = `
           <div>
-            <!-- Card Header -->
+            <!-- Header -->
             <div class="flex justify-between items-start mb-2">
               <div>
-                <h3 class="text-lg font-bold ${colorClass.text} flex items-center gap-1.5">
-                  <i class="fa-solid fa-circle text-[8px] animate-pulse ${isRunning ? colorClass.activeDot : 'text-slate-600'}"></i>
+                <h3 class="text-lg font-bold ${colorStyle.text} flex items-center gap-1.5">
+                  <i class="fa-solid fa-circle text-[8px] ${isRunning ? colorStyle.activeDot + ' animate-pulse' : 'text-slate-600'}"></i>
                   ${s.name}
                 </h3>
-                <span class="text-[11px] font-medium text-slate-400 bg-slate-900/80 px-2.5 py-1 rounded-full border border-cardBorder">
+                <span class="text-[11px] font-medium text-slate-400 bg-slate-900/85 px-2.5 py-1 rounded-full border border-cardBorder">
                   📅 মোট পড়িয়েছেন: ${daysCount} দিন
                 </span>
               </div>
               <div class="flex items-center gap-1.5">
-                <button onclick="editStudent('${s.id}')" class="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-cardBorder text-slate-400 hover:text-white text-xs transition" title="এডিট">
+                <button onclick="editStudent('${s.id}')" class="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-cardBorder text-slate-400 hover:text-white text-xs transition">
                   <i class="fa-regular fa-pen-to-square"></i>
                 </button>
-                <button onclick="deleteStudentConfirm('${s.id}')" class="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-cardBorder text-slate-400 hover:text-red-400 text-xs transition" title="মুছে ফেলুন">
+                <button onclick="deleteStudentConfirm('${s.id}')" class="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-cardBorder text-slate-400 hover:text-red-400 text-xs transition">
                   <i class="fa-regular fa-trash-can"></i>
                 </button>
               </div>
             </div>
 
-            <!-- Subject Selection Area -->
+            <!-- Subject Select -->
             <div class="mt-4 ${isRunning ? 'hidden' : ''}">
               <label class="block text-[10px] uppercase tracking-wider font-semibold text-slate-500 mb-1">আজকের বিষয়</label>
               <select id="sel-${s.id}" class="w-full bg-slate-900 border border-cardBorder rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-emerald-500 transition cursor-pointer">
-                ${selectOptions || '<option value="জেনারেল">কোনো বিষয় নেই</option>'}
+                ${selectOptions || '<option value="সাধারণ">সাধারণ</option>'}
               </select>
             </div>
 
-            <!-- Active Tracker Info -->
+            <!-- Active Timer Area -->
             <div id="active-info-${s.id}" class="mt-3 bg-slate-950/40 p-3 rounded-xl border border-cardBorder text-center ${isRunning ? '' : 'hidden'}">
               <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block mb-1">
                 বিষয়: <span class="text-emerald-400" id="active-subj-${s.id}">${isRunning ? activeSessions[s.id].subj : ''}</span>
               </span>
-              <div id="timer-${s.id}" class="text-2xl font-black ${colorClass.timerText} font-mono tracking-widest my-1 select-none">00:00:00</div>
-              <span class="text-[9px] text-slate-500 font-medium">সেশন চলমান আছে</span>
+              <div id="timer-${s.id}" class="text-2xl font-black ${colorStyle.timerText} font-mono tracking-widest my-1">00:00:00</div>
+              <span class="text-[9px] text-slate-500 font-medium">সেশন চলমান...</span>
             </div>
           </div>
 
           <div class="mt-5 space-y-2">
-            <!-- Session Toggle Button -->
-            <button onclick="toggleSession('${s.id}')" class="w-full font-bold py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-sm text-white ${isRunning ? 'bg-red-600 hover:bg-red-500 active:scale-[0.98]' : colorClass.btnBg}">
+            <!-- Toggle Session Btn -->
+            <button onclick="toggleSession('${s.id}')" class="w-full font-bold py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-sm text-white ${isRunning ? 'bg-red-600 hover:bg-red-500 active:scale-[0.98]' : colorStyle.btnBg}">
               <i class="fa-solid ${isRunning ? 'fa-hourglass-end animate-spin' : 'fa-circle-play'}"></i>
               ${isRunning ? 'সেশন শেষ করুন' : 'নতুন সেশন শুরু'}
             </button>
 
-            <!-- History Toggle Button -->
+            <!-- Toggle History Btn -->
             <button onclick="toggleHistoryAccordion('${s.id}')" class="w-full flex items-center justify-between py-2 px-3 text-xs bg-slate-900/60 hover:bg-slate-900 text-slate-400 hover:text-slate-200 border border-cardBorder rounded-xl transition">
               <span><i class="fa-solid fa-clock-rotate-left mr-1"></i> সেশন হিস্ট্রি (${studentSessions.length})</span>
               <i class="fa-solid fa-chevron-down text-[10px] transition duration-300" id="hist-icon-${s.id}"></i>
             </button>
 
-            <!-- History Detail List -->
-            <div id="hlist-${s.id}" class="hidden pt-2 space-y-1.5 max-h-40 overflow-y-auto border-t border-cardBorder/40">
+            <!-- History List Details -->
+            <div id="hlist-${s.id}" class="hidden pt-2 space-y-1.5 max-h-40 overflow-y-auto border-t border-cardBorder/30">
               ${renderHistoryList(s.id, studentSessions)}
             </div>
           </div>
         `;
         grid.appendChild(card);
 
-        // Keep active intervals
         if (isRunning) {
           triggerTimerDisplay(s.id, activeSessions[s.id].start);
         } else {
@@ -666,7 +683,7 @@
       });
     }
 
-    // Helper functions for modern card styling
+    // Color Utility map
     function getAccentClasses(color) {
       const themes = {
         blue: {
@@ -708,7 +725,7 @@
       return list.slice().reverse().map(l => {
         const timeStr = new Date(l.end).toLocaleDateString('bn-BD', {month:'short', day:'numeric'});
         return `
-          <div class="flex items-center justify-between py-1 px-2 hover:bg-slate-900/60 rounded-lg text-[11px] border-b border-cardBorder/20 transition group">
+          <div class="flex items-center justify-between py-1.5 px-2 hover:bg-slate-900/60 rounded-lg text-[11px] border-b border-cardBorder/20 transition group">
             <div class="flex items-center gap-1.5">
               <span class="text-slate-400 font-semibold">${timeStr}</span>
               <span class="text-slate-500">•</span>
@@ -716,7 +733,7 @@
             </div>
             <div class="flex items-center gap-2">
               <span class="font-mono text-slate-400 bg-slate-950 px-1.5 py-0.5 rounded text-[10px]">${Math.round(l.dur / 60000)}মি.</span>
-              <button onclick="deleteSessionConfirm('${l.id}')" class="opacity-0 group-hover:opacity-100 p-1 text-slate-500 hover:text-red-400 text-[10px] transition-all" title="ডিলিট">
+              <button onclick="deleteSessionConfirm('${l.id}')" class="opacity-0 group-hover:opacity-100 p-1 text-slate-500 hover:text-red-400 text-[10px] transition-all">
                 <i class="fa-regular fa-trash-can"></i>
               </button>
             </div>
@@ -725,7 +742,7 @@
       }).join('');
     }
 
-    window.toggleHistoryAccordion = function(id) {
+    function toggleHistoryAccordion(id) {
       const element = document.getElementById('hlist-'+id);
       const icon = document.getElementById('hist-icon-'+id);
       if (element.classList.contains('hidden')) {
@@ -737,8 +754,8 @@
       }
     }
 
-    // Toggle real-time timer session
-    window.toggleSession = async function(id) {
+    // Toggle real-time session
+    function toggleSession(id) {
       const now = Date.now();
       const student = students.find(s => s.id === id);
       if (!student) return;
@@ -746,22 +763,14 @@
       const isRunning = activeSessions[id] !== undefined;
 
       if (!isRunning) {
-        // Start Session
         const selectEl = document.getElementById('sel-'+id);
         const subj = selectEl ? selectEl.value : (student.sub[0] || 'সাধারণ');
         
-        const state = { start: now, subj };
-        
-        if (localMode) {
-          activeSessions[id] = state;
-          localStorage.setItem('tt_active', JSON.stringify(activeSessions));
-          renderGrid();
-        } else {
-          await setDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'active', id), state);
-        }
+        activeSessions[id] = { start: now, subj };
+        saveToStorage();
+        renderGrid();
         showToast(`${student.name} এর সেশন শুরু হয়েছে`, "info");
       } else {
-        // Stop Session and save logs
         const startState = activeSessions[id];
         const calculatedDur = now - startState.start;
 
@@ -774,29 +783,16 @@
           dur: calculatedDur
         };
 
-        if (localMode) {
-          sessions.push(newSession);
-          localStorage.setItem('tt_sessions', JSON.stringify(sessions));
-          delete activeSessions[id];
-          localStorage.setItem('tt_active', JSON.stringify(activeSessions));
-          renderGrid();
-          triggerUndoToast(id, newSession);
-        } else {
-          // Cloud operations
-          try {
-            await setDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'sessions', newSession.id), newSession);
-            await deleteDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'active', id));
-            triggerUndoToast(id, newSession);
-          } catch (e) {
-            console.error(e);
-            showToast("ক্লাউড সেশন সেভ করতে ব্যর্থ!", "error");
-          }
-        }
+        sessions.push(newSession);
+        delete activeSessions[id];
+        saveToStorage();
+        renderGrid();
+        
+        triggerUndoToast(id, newSession);
         showToast(`${student.name} এর সেশন সমাপ্ত ও সংরক্ষিত হয়েছে`, "success");
       }
     }
 
-    // Live counter display mechanics
     function triggerTimerDisplay(id, startTime) {
       if(timerIntervals[id]) clearInterval(timerIntervals[id]);
 
@@ -816,7 +812,7 @@
       timerIntervals[id] = setInterval(updateTime, 1000);
     }
 
-    // Undo State Logic
+    // Undo implementation
     let undoTimeout;
     function triggerUndoToast(studentId, savedSession) {
       lastDeletedSession = { studentId, session: savedSession };
@@ -835,42 +831,31 @@
       }, 10000);
     }
 
-    window.performUndo = async function() {
+    function performUndo() {
       if(!lastDeletedSession) return;
       
       const { studentId, session } = lastDeletedSession;
       
-      if(localMode) {
-        sessions = sessions.filter(s => s.id !== session.id);
-        localStorage.setItem('tt_sessions', JSON.stringify(sessions));
-        activeSessions[studentId] = { start: session.start, subj: session.subj };
-        localStorage.setItem('tt_active', JSON.stringify(activeSessions));
-        renderGrid();
-      } else {
-        try {
-          await deleteDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'sessions', session.id));
-          await setDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'active', studentId), { start: session.start, subj: session.subj });
-        } catch (e) {
-          console.error(e);
-          showToast("Undo ব্যর্থ হয়েছে", "error");
-        }
-      }
+      sessions = sessions.filter(s => s.id !== session.id);
+      activeSessions[studentId] = { start: session.start, subj: session.subj };
+      
+      saveToStorage();
+      renderGrid();
       
       document.getElementById('undo-box').classList.add('translate-y-10');
       setTimeout(() => document.getElementById('undo-box').classList.add('hidden'), 300);
-      showToast("সেশন ফিরিয়ে আনা হয়েছে এবং টাইমার পুনরায় চালু করা হয়েছে", "success");
+      showToast("সেশন রোলব্যাক ও রিস্টার্ট হয়েছে", "success");
       lastDeletedSession = null;
     }
 
     // Add Student Logics
-    window.openAddStudentModal = function() {
+    function openAddStudentModal() {
       document.getElementById('student-form').reset();
       document.getElementById('edit-student-id').value = '';
-      document.getElementById('student-name').disabled = false;
       openModal('studentModal');
     }
 
-    window.saveStudent = async function(e) {
+    function saveStudent(e) {
       e.preventDefault();
       const id = document.getElementById('edit-student-id').value || 'std_' + Date.now();
       const name = document.getElementById('student-name').value.trim();
@@ -880,30 +865,20 @@
 
       const newStudent = { id, name, c: color, sub: subjects };
 
-      if(localMode) {
-        const index = students.findIndex(s => s.id === id);
-        if(index > -1) {
-          students[index] = newStudent;
-        } else {
-          students.push(newStudent);
-        }
-        localStorage.setItem('tt_students', JSON.stringify(students));
-        renderGrid();
-        showToast("ছাত্র সফলভাবে সংরক্ষিত", "success");
+      const index = students.findIndex(s => s.id === id);
+      if(index > -1) {
+        students[index] = newStudent;
       } else {
-        try {
-          await setDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'students', id), newStudent);
-          showToast("ছাত্র ক্লাউডে সংরক্ষিত হয়েছে", "success");
-        } catch(err) {
-          console.error(err);
-          showToast("ক্লাউডে সেভ করতে সমস্যা হয়েছে", "error");
-        }
+        students.push(newStudent);
       }
-
+      
+      saveToStorage();
+      renderGrid();
       closeModal('studentModal');
+      showToast("ছাত্র/ছাত্রীর তথ্য সফলভাবে সেভ হয়েছে", "success");
     }
 
-    window.editStudent = function(id) {
+    function editStudent(id) {
       const student = students.find(s => s.id === id);
       if(!student) return;
 
@@ -917,7 +892,7 @@
       openModal('studentModal');
     }
 
-    // Custom Confirmation Dialog helper
+    // Custom confirm dialog trigger
     function customConfirm(message, onOk) {
       const modal = document.getElementById('confirmModal');
       document.getElementById('confirm-text').textContent = message;
@@ -938,60 +913,37 @@
       btnCancel.onclick = () => { cleanup(); };
     }
 
-    window.deleteStudentConfirm = function(id) {
-      customConfirm("আপনি কি নিশ্চিতভাবে এই ছাত্র/ছাত্রীকে ডিলিট করতে চান? ডিলিট করলে এর পূর্ববর্তী সমস্ত সেশনও ডিলিট হয়ে যাবে!", async () => {
-        if(localMode) {
-          students = students.filter(s => s.id !== id);
-          sessions = sessions.filter(s => s.studentId !== id);
-          localStorage.setItem('tt_students', JSON.stringify(students));
-          localStorage.setItem('tt_sessions', JSON.stringify(sessions));
-          renderGrid();
-          showToast("ছাত্র ডিলিট করা হয়েছে", "success");
-        } else {
-          try {
-            await deleteDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'students', id));
-            // Deleting sessions associated to students inside Firestore
-            const relatedSessions = sessions.filter(s => s.studentId === id);
-            for(const s of relatedSessions) {
-              await deleteDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'sessions', s.id));
-            }
-            showToast("ছাত্র ও এর সমস্ত সেশন ডিলিট হয়েছে", "success");
-          } catch(err) {
-            console.error(err);
-            showToast("ডিলিট করতে সমস্যা হয়েছে", "error");
-          }
+    function deleteStudentConfirm(id) {
+      customConfirm("আপনি কি নিশ্চিতভাবে এই ছাত্র/ছাত্রীকে ডিলিট করতে চান? এর সাথে তার পূর্ববর্তী সমস্ত সেশনও ডিলিট হয়ে যাবে!", () => {
+        students = students.filter(s => s.id !== id);
+        sessions = sessions.filter(s => s.studentId !== id);
+        saveToStorage();
+        renderGrid();
+        showToast("ছাত্রের বিবরণ ও সেশন মুছে ফেলা হয়েছে", "success");
+      });
+    }
+
+    function deleteSessionConfirm(id) {
+      customConfirm("আপনি কি এই নির্দিষ্ট সেশনটি ডিলিট করতে চান?", () => {
+        sessions = sessions.filter(s => s.id !== id);
+        saveToStorage();
+        renderGrid();
+        showToast("সেশনটি মুছে ফেলা হয়েছে", "success");
+        // Update reports modal if open
+        if (!document.getElementById('reportModal').classList.contains('hidden')) {
+          generateReport();
         }
       });
     }
 
-    window.deleteSessionConfirm = function(id) {
-      customConfirm("আপনি কি এই নির্দিষ্ট সেশনটি ডিলিট করতে চান?", async () => {
-        if(localMode) {
-          sessions = sessions.filter(s => s.id !== id);
-          localStorage.setItem('tt_sessions', JSON.stringify(sessions));
-          renderGrid();
-          showToast("সেশন ডিলিট করা হয়েছে", "success");
-        } else {
-          try {
-            await deleteDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'sessions', id));
-            showToast("সেশন ডিলিট হয়েছে", "success");
-          } catch (e) {
-            console.error(e);
-            showToast("সেশন ডিলিট ব্যর্থ হয়েছে", "error");
-          }
-        }
-      });
-    }
-
-    // Manual Session Entry Logic
-    window.openManualEntryModal = function() {
+    // Manual Session Inputs
+    function openManualEntryModal() {
       const studentSelect = document.getElementById('manual-student');
       studentSelect.innerHTML = '<option value="">ছাত্র নির্বাচন করুন</option>';
       students.forEach(s => {
         studentSelect.innerHTML += `<option value="${s.id}">${s.name}</option>`;
       });
 
-      // Set default date to today
       const today = new Date().toISOString().split('T')[0];
       document.getElementById('manual-date').value = today;
       document.getElementById('manual-start').value = "16:00";
@@ -1001,7 +953,7 @@
       openModal('manualModal');
     }
 
-    window.updateManualSubjectsDropdown = function() {
+    function updateManualSubjectsDropdown() {
       const studentId = document.getElementById('manual-student').value;
       const subjectSelect = document.getElementById('manual-subject');
       subjectSelect.innerHTML = '';
@@ -1014,7 +966,7 @@
       }
     }
 
-    window.calculateManualDuration = function() {
+    function calculateManualDuration() {
       const startTime = document.getElementById('manual-start').value;
       const endTime = document.getElementById('manual-end').value;
       const calcLabel = document.getElementById('manual-duration-calc');
@@ -1029,17 +981,16 @@
 
       let diffMinutes = (endH * 60 + endM) - (startH * 60 + startM);
       if (diffMinutes < 0) {
-        // Assume wraps to next day if negative
-        diffMinutes += 24 * 60;
+        diffMinutes += 24 * 60; // Next day fallback
       }
 
       const hrs = Math.floor(diffMinutes / 60);
       const mins = diffMinutes % 60;
       calcLabel.textContent = `${hrs > 0 ? hrs + ' ঘণ্টা ' : ''}${mins} মিনিট`;
-      return diffMinutes * 60 * 1000; // Return Milliseconds
+      return diffMinutes * 60 * 1000;
     }
 
-    window.saveManualSession = async function(e) {
+    function saveManualSession(e) {
       e.preventDefault();
       const studentId = document.getElementById('manual-student').value;
       const subject = document.getElementById('manual-subject').value;
@@ -1048,13 +999,11 @@
       const endTime = document.getElementById('manual-end').value;
 
       if (!studentId || !subject || !dateStr || !startTime || !endTime) {
-        showToast("সবগুলো ঘর সঠিকভাবে পূরণ করুন", "error");
+        showToast("সবগুলো ঘর ঠিকমত পূরণ করুন", "error");
         return;
       }
 
       const durMs = calculateManualDuration();
-      
-      // Calculate final epoch times for start & end
       const startEpoch = new Date(`${dateStr}T${startTime}`).getTime();
       const endEpoch = startEpoch + durMs;
 
@@ -1067,29 +1016,16 @@
         dur: durMs
       };
 
-      if (localMode) {
-        sessions.push(manualSession);
-        localStorage.setItem('tt_sessions', JSON.stringify(sessions));
-        renderGrid();
-        showToast("সেশন ম্যানুয়ালি যোগ করা হয়েছে", "success");
-      } else {
-        try {
-          await setDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'sessions', manualSession.id), manualSession);
-          showToast("সেশন ক্লাউডে যুক্ত করা হয়েছে", "success");
-        } catch (err) {
-          console.error(err);
-          showToast("ক্লাউড সেশন সেভ করতে সমস্যা হয়েছে", "error");
-        }
-      }
-
+      sessions.push(manualSession);
+      saveToStorage();
+      renderGrid();
       closeModal('manualModal');
+      showToast("ম্যানুয়াল সেশন সফলভাবে যুক্ত হয়েছে!", "success");
     }
 
-    // Comprehensive Reports Section
-    window.openReportModal = function() {
+    // Report Generator
+    function openReportModal() {
       const today = new Date();
-      
-      // Set to current month starting (1st day) and ending (last day)
       const firstDay = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
       const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0).toISOString().split('T')[0];
 
@@ -1100,12 +1036,12 @@
       openModal('reportModal');
     }
 
-    window.generateReport = function() {
+    function generateReport() {
       const sDStr = document.getElementById('report-start').value;
       const eDStr = document.getElementById('report-end').value;
 
       if(!sDStr || !eDStr) {
-        showToast("অনুগ্রহ করে শুরু এবং শেষ তারিখ নির্বাচন করুন!", "error");
+        showToast("শুরু ও শেষের তারিখ নির্বাচন করুন", "error");
         return;
       }
 
@@ -1113,10 +1049,9 @@
       const eD = new Date(eDStr).setHours(23,59,59,999);
 
       let grandTotalMs = 0;
-      let html = `<div class="space-y-3 mt-4 pt-4 border-t border-cardBorder/40">`;
+      let html = `<div class="space-y-3 mt-4 pt-4 border-t border-cardBorder/30">`;
 
       students.forEach(s => {
-        // Filter sessions by selected date range and student ID
         const matched = sessions.filter(l => l.studentId === s.id && l.end >= sD && l.end <= eD);
         const totalDurationMs = matched.reduce((sum, l) => sum + (l.dur || 0), 0);
         const daysCount = new Set(matched.map(l => new Date(l.end).toDateString())).size;
@@ -1127,14 +1062,18 @@
         const mins = Math.round((totalDurationMs % 3600000) / 60000);
 
         html += `
-          <div class="flex justify-between items-center bg-slate-900/60 p-3 rounded-xl border border-cardBorder">
-            <div>
-              <span class="font-bold text-slate-200 block text-sm">${s.name}</span>
-              <span class="text-[11px] text-slate-500">📅 সেশন হয়েছে: <strong class="text-slate-300 font-semibold">${daysCount} দিন</strong></span>
+          <div class="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between bg-slate-900/60 p-3.5 rounded-xl border border-cardBorder">
+            <div class="flex-1">
+              <span class="font-bold text-slate-100 text-sm block">${s.name}</span>
+              <span class="text-[11px] text-slate-400">📅 সেশন সংখ্যা: <strong class="text-emerald-400 font-semibold">${matched.length} টি</strong> (${daysCount} দিন)</span>
             </div>
-            <div class="text-right">
-              <span class="font-bold font-mono text-emerald-400 text-sm block">${hrs}ঘণ্টা ${mins}মিনিট</span>
-              <span class="text-[10px] text-slate-500">${matched.length} টি ক্লাস</span>
+            <div class="flex items-center justify-between sm:justify-end gap-3 border-t sm:border-t-0 border-cardBorder/20 pt-2 sm:pt-0">
+              <div class="text-left sm:text-right">
+                <span class="font-bold font-mono text-emerald-400 text-xs sm:text-sm block">${hrs} ঘণ্টা ${mins} মিনিট</span>
+              </div>
+              <button onclick="openGuardianReport('${s.id}', '${sDStr}', '${eDStr}')" class="px-3 py-1.5 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
+                <i class="fa-solid fa-file-invoice"></i> অভিভাবককে পাঠান
+              </button>
             </div>
           </div>
         `;
@@ -1145,7 +1084,7 @@
 
       html += `
         <div class="flex justify-between items-center bg-emerald-500/10 p-3.5 rounded-xl border border-emerald-500/20 mt-4">
-          <span class="font-extrabold text-emerald-400 text-sm">সর্বমোট পড়ার সময়</span>
+          <span class="font-extrabold text-emerald-400 text-sm">সর্বমোট পড়ানোর সময়</span>
           <span class="font-extrabold font-mono text-emerald-400 text-base">${totalHrs} ঘণ্টা ${totalMins} মিনিট</span>
         </div>
       </div>`;
@@ -1153,111 +1092,285 @@
       document.getElementById('report-result').innerHTML = html;
     }
 
-    // Export Data (Backup file)
-    window.exportData = function() {
+    // Guardian Progress / Invoice Modal Construction
+    function openGuardianReport(studentId, startStr, endStr) {
+      const student = students.find(s => s.id === studentId);
+      if(!student) return;
+
+      const sD = new Date(startStr).getTime();
+      const eD = new Date(endStr).setHours(23,59,59,999);
+      const matched = sessions.filter(l => l.studentId === studentId && l.end >= sD && l.end <= eD);
+
+      const formattedStartDate = new Date(startStr).toLocaleDateString('bn-BD', {month:'short', day:'numeric'});
+      const formattedEndDate = new Date(endStr).toLocaleDateString('bn-BD', {month:'short', day:'numeric'});
+
+      const totalDurationMs = matched.reduce((sum, l) => sum + (l.dur || 0), 0);
+      const daysCount = new Set(matched.map(l => new Date(l.end).toDateString())).size;
+
+      const hrs = Math.floor(totalDurationMs / 3600000);
+      const mins = Math.round((totalDurationMs % 3600000) / 60000);
+
+      // Subject frequency count
+      const subjStats = {};
+      matched.forEach(sess => {
+        subjStats[sess.subj] = (subjStats[sess.subj] || 0) + 1;
+      });
+
+      // Construct breakdown UI
+      const breakdownEl = document.getElementById('slip-subject-breakdown');
+      breakdownEl.innerHTML = '';
+      Object.keys(subjStats).forEach(subj => {
+        breakdownEl.innerHTML += `
+          <div class="flex justify-between items-center bg-slate-900/40 p-2.5 rounded-lg border border-cardBorder/40">
+            <span>📚 ${subj}</span>
+            <strong class="text-slate-300 font-mono">${subjStats[subj]} টি ক্লাস</strong>
+          </div>
+        `;
+      });
+
+      if (Object.keys(subjStats).length === 0) {
+        breakdownEl.innerHTML = `<div class="text-slate-500 text-center py-2">কোনো নির্দিষ্ট বিষয়ের সেশন নেই</div>`;
+      }
+
+      // Populate Slip Details
+      document.getElementById('slip-range').textContent = `${formattedStartDate} - ${formattedEndDate}`;
+      document.getElementById('slip-student-name').textContent = student.name;
+      document.getElementById('slip-total-classes').textContent = matched.length;
+      document.getElementById('slip-days-count').textContent = `${daysCount} দিন`;
+      document.getElementById('slip-hours-count').textContent = `${hrs}ঘ ${mins}মি`;
+
+      // Save global pointer
+      selectedReportData = {
+        student,
+        startDateStr: formattedStartDate,
+        endDateStr: formattedEndDate,
+        daysCount,
+        classesCount: matched.length,
+        hrs,
+        mins,
+        subjStats
+      };
+
+      openModal('guardianReportModal');
+    }
+
+    // Share report via WhatsApp pre-filled text API
+    function shareOnWhatsApp() {
+      if(!selectedReportData) return;
+      const { student, startDateStr, endDateStr, daysCount, classesCount, hrs, mins, subjStats } = selectedReportData;
+
+      let subjectBreakdownStr = '';
+      Object.keys(subjStats).forEach(subj => {
+        subjectBreakdownStr += `   ▫️ ${subj}: ${subjStats[subj]} টি ক্লাস\n`;
+      });
+
+      const messageText = `*টিউশন রিপোর্ট কার্ড (Tuition Tracker)* 📄\n` +
+                          `------------------------------------\n` +
+                          `👤 *শিক্ষার্থীর নাম:* ${student.name}\n` +
+                          `📅 *সময়কাল:* ${startDateStr} - ${endDateStr}\n` +
+                          `------------------------------------\n` +
+                          `📊 *মোট ক্লাসের বিবরণ:*\n` +
+                          `   ▪️ মোট দিন (হাজিরা): ${daysCount} দিন\n` +
+                          `   ▪️ মোট ক্লাসের সংখ্যা: ${classesCount} টি\n` +
+                          `   ▪️ মোট সময়: ${hrs} ঘণ্টা ${mins} মিনিট\n` +
+                          `------------------------------------\n` +
+                          `📚 *বিষয়ভিত্তিক উপস্থিতি:*\n` +
+                          (subjectBreakdownStr || `   ▫️ কোনো ডেটা নেই\n`) +
+                          `------------------------------------\n` +
+                          `*বিঃদ্রঃ* এটি একটি স্বয়ংক্রিয়ভাবে সংরক্ষিত ডিজিটাল রিপোর্ট। কোনো প্রশ্ন বা মতামতের জন্য দয়া করে যোগাযোগ করুন। ধন্যবাদ।`;
+
+      const encoded = encodeURIComponent(messageText);
+      window.open(`https://api.whatsapp.com/send?text=${encoded}`, '_blank');
+      showToast("হোয়াটসঅ্যাপে পাঠানো হচ্ছে...", "success");
+    }
+
+    // Copy readable text block to clipboard
+    function copyFormattedReportText() {
+      if(!selectedReportData) return;
+      const { student, startDateStr, endDateStr, daysCount, classesCount, hrs, mins, subjStats } = selectedReportData;
+
+      let subjectBreakdownStr = '';
+      Object.keys(subjStats).forEach(subj => {
+        subjectBreakdownStr += ` - ${subj}: ${subjStats[subj]} টি ক্লাস\n`;
+      });
+
+      const rawText = `টিউশন রিপোর্ট কার্ড\n` +
+                      `====================================\n` +
+                      `শিক্ষার্থীর নাম: ${student.name}\n` +
+                      `সময়কাল: ${startDateStr} - ${endDateStr}\n` +
+                      `====================================\n` +
+                      `মোট দিন (হাজিরা): ${daysCount} দিন\n` +
+                      `মোট ক্লাস সংখ্যা: ${classesCount} টি\n` +
+                      `মোট পড়ানোর সময়: ${hrs} ঘণ্টা ${mins} মিনিট\n` +
+                      `====================================\n` +
+                      `বিষয়ভিত্তিক ক্লাস পরিসংখ্যান:\n` +
+                      (subjectBreakdownStr || ` - কোনো ডেটা নেই\n`) +
+                      `====================================\n` +
+                      `Generated by Tuition Tracker Pro.`;
+
+      const tempInp = document.createElement('textarea');
+      tempInp.value = rawText;
+      document.body.appendChild(tempInp);
+      tempInp.select();
+      try {
+        document.execCommand('copy');
+        showToast("রিপোর্ট স্লিপ কপি হয়েছে!", "success");
+      } catch (err) {
+        showToast("কপি করা যায়নি", "error");
+      }
+      document.body.removeChild(tempInp);
+    }
+
+    // Export Data (Local Download)
+    function exportData() {
       const backupData = {
-        version: 'tuition-v9-cloud',
+        version: 'tuition-v9-offline',
         exportDate: new Date().toISOString(),
+        profileId: currentProfileId,
         students,
-        sessions,
-        activeSessions
+        sessions
       };
 
       const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `Tuition_Backup_${new Date().toISOString().split('T')[0]}.json`;
+      a.download = `Tuition_Tracker_Backup_${currentProfileId}_${new Date().toISOString().split('T')[0]}.json`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      showToast("ব্যাকআপ ফাইল ডাউনলোড সম্পূর্ণ হয়েছে", "success");
+      showToast("ব্যাকআপ ফাইল ডাউনলোড সম্পন্ন!", "success");
     }
 
-    window.triggerImport = function() {
+    function triggerImport() {
       document.getElementById('file-import-input').click();
     }
 
-    // Process Import File
-    window.processFileImport = function(input) {
+    // Complex/Adaptive Import Logic (Capable of parsing V8 and V9 structures)
+    function processFileImport(input) {
       const file = input.files[0];
       if (!file) return;
 
       const reader = new FileReader();
-      reader.onload = async (e) => {
+      reader.onload = (e) => {
         try {
           const imported = JSON.parse(e.target.result);
-          if (!imported.students || !imported.sessions) {
-            showToast("ভুল ফাইল ফরম্যাট! ব্যাকআপ ফাইলটি সঠিক নয়।", "error");
+          
+          let parsedStudents = [];
+          let parsedSessions = [];
+
+          // Format Analysis
+          if (imported.students && Array.isArray(imported.students) && imported.sessions && Array.isArray(imported.sessions)) {
+            // New V9 Backup Format
+            parsedStudents = imported.students;
+            parsedSessions = imported.sessions;
+          } else {
+            // Old V8 Format Parsing Logic (Mapping dictionary format to array format)
+            Object.keys(imported).forEach(studentId => {
+              // Ensure we are parsing an array containing sessions
+              if (Array.isArray(imported[studentId])) {
+                let defaultSObj = DEFAULT_STUDENTS.find(s => s.id === studentId) || {
+                  id: studentId,
+                  name: studentId.charAt(0).toUpperCase() + studentId.slice(1),
+                  c: 'blue',
+                  sub: []
+                };
+
+                const mappedSubjectsSet = new Set();
+                
+                imported[studentId].forEach((sess, index) => {
+                  if (sess.subj) mappedSubjectsSet.add(sess.subj);
+                  
+                  parsedSessions.push({
+                    id: `v8_sess_${studentId}_${sess.start || index}_${Math.floor(Math.random()*1000)}`,
+                    studentId: studentId,
+                    start: sess.start || Date.now(),
+                    end: sess.end || Date.now(),
+                    subj: sess.subj || "সাধারণ",
+                    dur: sess.dur || ((sess.end && sess.start) ? (sess.end - sess.start) : 0)
+                  });
+                });
+
+                defaultSObj.sub = Array.from(mappedSubjectsSet);
+                if (defaultSObj.sub.length === 0) {
+                  defaultSObj.sub = ["সাধারণ"];
+                }
+                parsedStudents.push(defaultSObj);
+              }
+            });
+          }
+
+          if (parsedStudents.length === 0 && parsedSessions.length === 0) {
+            showToast("ফাইলে কোনো টিউশন ডেটা পাওয়া যায়নি!", "error");
             return;
           }
 
-          if (localMode) {
-            students = imported.students;
-            sessions = imported.sessions;
-            activeSessions = imported.activeSessions || {};
-            localStorage.setItem('tt_students', JSON.stringify(students));
-            localStorage.setItem('tt_sessions', JSON.stringify(sessions));
-            localStorage.setItem('tt_active', JSON.stringify(activeSessions));
-            renderGrid();
-            showToast("লোকাল মেমোরিতে রিস্টোর সম্পূর্ণ হয়েছে!", "success");
-          } else {
-            // Write all imported data directly to Cloud (Rule 1)
-            const uid = currentUser.uid;
-            showToast("ক্লাউড রিস্টোর হচ্ছে...", "info");
+          // Cache parsed outputs temporarily
+          tempImportedData = {
+            students: parsedStudents,
+            sessions: parsedSessions
+          };
 
-            for (const s of imported.students) {
-              await setDoc(doc(db, 'artifacts', appId, 'users', uid, 'students', s.id), s);
-            }
-            for (const sess of imported.sessions) {
-              await setDoc(doc(db, 'artifacts', appId, 'users', uid, 'sessions', sess.id), sess);
-            }
-            if (imported.activeSessions) {
-              for (const [sId, activeData] of Object.entries(imported.activeSessions)) {
-                await setDoc(doc(db, 'artifacts', appId, 'users', uid, 'active', sId), activeData);
-              }
-            }
-            showToast("ক্লাউড ডাটাবেজ রিস্টোর সম্পন্ন হয়েছে!", "success");
-          }
+          // Close Backup Modal and Open Decision dialog
           closeModal('backupModal');
+          openModal('importConflictModal');
+
         } catch (err) {
           console.error(err);
-          showToast("ফাইল পড়তে কোনো ত্রুটি হয়েছে!", "error");
+          showToast("ফাইলটি ভুল ফরম্যাটে আছে অথবা ক্ষতিগ্রস্ত!", "error");
         }
       };
       reader.readAsText(file);
-      // Reset input value to allow uploading same file again
-      input.value = '';
+      input.value = ''; // Reset input target
     }
 
-    window.copySyncId = function() {
-      if (localMode || !currentUser) {
-        showToast("অফলাইন মোডে কোনো সিঙ্ক আইডি নেই!", "error");
-        return;
+    // Resolve conflicts and write final datasets
+    function completeImportProcess(mode) {
+      if(!tempImportedData) return;
+
+      if (mode === 'replace') {
+        students = tempImportedData.students;
+        sessions = tempImportedData.sessions;
+        showToast("সফলভাবে সমস্ত পুরাতন সেশন রিপ্লেস করা হয়েছে!", "success");
+      } else {
+        // Merge mode - append with check to prevent duplicate session ids
+        tempImportedData.students.forEach(importedS => {
+          const exists = students.some(s => s.id === importedS.id);
+          if(!exists) {
+            students.push(importedS);
+          } else {
+            // Merge subject lists
+            const currentS = students.find(s => s.id === importedS.id);
+            const combinedSubjects = new Set([...(currentS.sub || []), ...(importedS.sub || [])]);
+            currentS.sub = Array.from(combinedSubjects);
+          }
+        });
+
+        tempImportedData.sessions.forEach(importedSess => {
+          const isDuplicate = sessions.some(s => s.id === importedSess.id || (s.start === importedSess.start && s.studentId === importedSess.studentId));
+          if(!isDuplicate) {
+            sessions.push(importedSess);
+          }
+        });
+
+        showToast("পূর্ববর্তী তথ্যের সাথে নতুন তথ্য মার্জ করা হয়েছে!", "success");
       }
-      const tempInp = document.createElement('input');
-      tempInp.value = currentUser.uid;
-      document.body.appendChild(tempInp);
-      tempInp.select();
-      
-      try {
-        const success = document.execCommand('copy');
-        if(success) {
-          showToast("সিঙ্ক আইডি ক্লিপবোর্ডে কপি হয়েছে!", "success");
-        } else {
-          showToast("কপি করা যায়নি, ম্যানুয়ালি কপি করুন: " + currentUser.uid, "error");
-        }
-      } catch (err) {
-        // Fallback for extreme constraints
-        prompt("নিচের সিঙ্ক আইডিটি সিলেক্ট করে কপি করুন:", currentUser.uid);
-      }
-      document.body.removeChild(tempInp);
+
+      saveToStorage();
+      renderGrid();
+      closeModal('importConflictModal');
+      tempImportedData = null;
     }
 
-    // Window Load Trigger
+    // Window Setup triggers
+    window.openBackupModal = function() {
+      openModal('backupModal');
+    }
+
     window.onload = function() {
-      initApp();
+      loadLocalData();
+      renderGrid();
     }
   </script>
 </body>
